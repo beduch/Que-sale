@@ -1,0 +1,358 @@
+.saved-container {
+  max-width: 430px;
+
+  min-height: 100vh;
+
+  margin: 0 auto;
+
+  background: #fff;
+
+  padding-bottom: 100px;
+}
+
+
+/* Header */
+
+.saved-header {
+  height: 76px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+
+  border-bottom: 1px solid #eeeeee;
+
+  background: #fff;
+}
+
+.saved-header h1 {
+  margin: 0;
+
+  font-size: 1rem;
+
+  font-weight: 800;
+
+  color: #303044;
+}
+
+.saved-back-btn {
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid #e5e5e5;
+
+  background: #fff;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #444;
+
+  cursor: pointer;
+}
+
+.saved-header-space {
+  width: 32px;
+}
+
+
+/* Lista */
+
+.saved-list {
+  padding: 14px 18px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 13px;
+}
+
+
+/* Card */
+
+.saved-card {
+  position: relative;
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  padding: 42px 10px 13px;
+
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.07);
+}
+
+
+/* Etiquetas */
+
+.saved-card-labels {
+  position: absolute;
+
+  top: 9px;
+
+  left: 10px;
+  right: 10px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.saved-category {
+  border-radius: 6px;
+
+  padding: 4px 7px;
+
+  font-size: 0.56rem;
+
+  font-weight: 700;
+}
+
+.saved-category.morning {
+  background: #e8f8f6;
+  color: #00aaa0;
+}
+
+.saved-category.night {
+  background: #fff0ee;
+  color: #ef6c64;
+}
+
+.saved-category.midday {
+  background: #eaf7ea;
+  color: #4b974f;
+}
+
+.saved-category.afternoon {
+  background: #fff7e9;
+  color: #d99b38;
+}
+
+.saved-priority {
+  background: #fff0ee;
+
+  color: #ef6c64;
+
+  border-radius: 6px;
+
+  padding: 4px 7px;
+
+  font-size: 0.56rem;
+
+  font-weight: 700;
+}
+
+
+/* Contenido */
+
+.saved-card-content {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.saved-card-img {
+  width: 75px;
+  height: 75px;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+
+  flex-shrink: 0;
+
+  cursor: pointer;
+}
+
+.saved-card-info {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.saved-card-info h2 {
+  margin: 0 0 4px;
+
+  font-size: 0.76rem;
+
+  line-height: 1.2;
+
+  color: #303044;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.saved-meta {
+  margin: 2px 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  font-size: 0.61rem;
+
+  color: #888;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.saved-location svg {
+  color: #00aaa0;
+
+  flex-shrink: 0;
+}
+
+
+/* Notas */
+
+.saved-notes {
+  margin: 5px 0 0;
+
+  padding: 4px 7px;
+
+  background: #f5f5f5;
+
+  border-radius: 5px;
+
+  color: #999;
+
+  font-size: 0.56rem;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* Eliminar */
+
+.saved-remove-btn {
+  width: 26px;
+  height: 26px;
+
+  flex-shrink: 0;
+
+  border: 1px solid #e7e7e7;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #999;
+
+  font-size: 1.1rem;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-remove-btn:hover {
+  color: #ef6c64;
+
+  border-color: #ef6c64;
+}
+
+
+/* Sin eventos */
+
+.saved-empty {
+  min-height: 60vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  text-align: center;
+
+  color: #aaa;
+}
+
+.saved-empty svg {
+  color: #00b2a9;
+
+  margin-bottom: 10px;
+}
+
+.saved-empty h2 {
+  margin: 0 0 7px;
+
+  font-size: 1rem;
+
+  color: #303044;
+}
+
+.saved-empty p {
+  margin: 0;
+
+  max-width: 270px;
+
+  font-size: 0.75rem;
+
+  line-height: 1.5;
+}
+
+
+/* Tablet */
+
+@media (min-width: 481px) {
+
+  .saved-container {
+    max-width: 680px;
+  }
+
+  .saved-list {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    padding: 20px 24px;
+  }
+}
+
+
+/* Desktop */
+
+@media (min-width: 1024px) {
+
+  .saved-container {
+    max-width: 960px;
+  }
+
+  .saved-list {
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+  }
+}

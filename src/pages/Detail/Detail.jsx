@@ -10,6 +10,7 @@ import {
   ClockIcon
 } from '../../icons';
 import './Detail.css';
+import SaveEventModal from '../../components/SaveEventModal/SaveEventModal';
 
 export default function Detail() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function Detail() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [eventToSave, setEventToSave] = useState(null);
 
   useEffect(() => {
     const getEvent = async () => {
@@ -341,10 +343,7 @@ export default function Detail() {
 
         <button
           className="detail-favorite-btn"
-          onClick={() => {
-            // Acá después pueden implementar favoritos
-            console.log('Agregar a favoritos', event.id);
-          }}
+          onClick={() => setEventToSave(event)}
         >
           <span className="detail-plus">
             +
@@ -354,6 +353,13 @@ export default function Detail() {
         </button>
 
       </div>
+
+      {eventToSave && (
+        <SaveEventModal
+          event={eventToSave}
+          onClose={() => setEventToSave(null)}
+        />
+      )}
 
     </div>
   );
