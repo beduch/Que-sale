@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchFromApi } from '../../api/client';
 import './Search.css';
 import { SearchIcon, XIcon, BookmarkIcon, CalendarIcon, MapPinIcon } from '../../icons';
+import SaveEventModal from '../../components/SaveEventModal/SaveEventModal';
 
 export default function Search() {
   const [keyword, setKeyword] = useState('');
@@ -13,7 +14,7 @@ export default function Search() {
   const [error, setError] = useState('');
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
+  const [eventToSave, setEventToSave] = useState(null);
   const navigate = useNavigate();
 
   const search = async (pageNumber = 0) => {
@@ -127,7 +128,7 @@ export default function Search() {
                 <div className="event-card-info">
                   <div className="event-card-top">
                     <h3 className="event-card-name">{event.name}</h3>
-                    <button className="event-card-bookmark" aria-label="Guardar evento"><BookmarkIcon size={16} /></button>
+                    <button className="event-card-bookmark" aria-label="Guardar evento" onClick={(e) => {e.stopPropagation();setEventToSave(event);}}><BookmarkIcon size={16} /></button>
                   </div>
                   <p className="event-card-meta">
                     <span className="event-card-meta-date">
@@ -170,6 +171,13 @@ export default function Search() {
           </button>
         </div>
       </>
+    )}
+
+    {eventToSave && (
+      <SaveEventModal
+        event={eventToSave}
+        onClose={() => setEventToSave(null)}
+      />
     )}
   </div>
 );
