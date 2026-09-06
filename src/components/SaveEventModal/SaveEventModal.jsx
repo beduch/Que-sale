@@ -24,6 +24,9 @@ export default function SaveEventModal({ event, onClose }) {
   const city =
     venue?.city?.name || '';
 
+  const countryName =
+    venue?.country?.name || '';
+
   const handleSave = () => {
     if (!category) {
       return;
@@ -40,6 +43,7 @@ export default function SaveEventModal({ event, onClose }) {
 
       venue: venueName,
       city: city,
+      country: countryName,
 
       price: price?.min ?? null,
 

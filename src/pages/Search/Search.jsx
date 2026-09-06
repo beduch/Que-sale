@@ -1,46 +1,165 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Fuse from 'fuse.js';
 import { fetchFromApi } from '../../api/client';
 import './Search.css';
-import { SearchIcon, XIcon, BookmarkIcon, CalendarIcon, MapPinIcon } from '../../icons';
+import { SearchIcon, XIcon, BookmarkIcon, CalendarIcon, MapPinIcon, ClockIcon } from '../../icons';
 import SaveEventModal from '../../components/SaveEventModal/SaveEventModal';
+import citiesJson from '../../data/cities.json';
+import countriesJson from '../../data/countries.json';
 
 export default function Search() {
-  const [keyword, setKeyword] = useState('');
-  const [category, setCategory] = useState('');
+  const location = useLocation();
+  const initialCategory = location.state?.category || '';
+  const initialKeyword = location.state?.keyword || '';
+
+  const [keyword, setKeyword] = useState(initialKeyword);
+  const [category, setCategory] = useState(initialCategory);
+  
   const [city, setCity] = useState('');
+  const [countryName, setCountryName] = useState('');
+  const [countryCode, setCountryCode] = useState('');
+  
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [eventToSave, setEventToSave] = useState(null);
+  
+  // Estados para Búsquedas Recientes
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [showKeywordSuggestions, setShowKeywordSuggestions] = useState(false);
+  
+  // Estados para Autocompletado de Ciudades
+  const [customCities, setCustomCities] = useState([]);
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+
+  // Estados para Autocompletado de Países
+  const [countrySuggestions, setCountrySuggestions] = useState([]);
+  const [showCountrySuggestions, setShowCountrySuggestions] = useState(false);
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setRecentSearches(JSON.parse(localStorage.getItem('que-sale-recent') || '[]'));
+    
+    // Cargar custom-cities y adaptarlas al nuevo formato si eran solo strings
+    const storedCities = JSON.parse(localStorage.getItem('que-sale-custom-cities') || '[]');
+    const normalizedCustomCities = storedCities.map(c => 
+      typeof c === 'string' ? { name: c, countryCode: null } : c
+    );
+    setCustomCities(normalizedCustomCities);
+  }, []);
+
+  const fuseCountry = useMemo(() => {
+    return new Fuse(countriesJson, { keys: ['name'], threshold: 0.4 });
+  }, []);
+
+  const fuseCity = useMemo(() => {
+    // Unir JSON y custom, evitando duplicados por nombre
+    const map = new Map();
+    citiesJson.forEach(c => map.set(c.name.toLowerCase(), c));
+    customCities.forEach(c => map.set(c.name.toLowerCase(), c));
+    const allCities = Array.from(map.values());
+
+    let listToSearch = allCities;
+    
+    // Filtrar la lista de ciudades si hay un país seleccionado o tipeado
+    let activeCountryCode = countryCode;
+    if (!activeCountryCode && countryName) {
+      const match = countriesJson.find(c => c.name.toLowerCase() === countryName.toLowerCase());
+      if (match) activeCountryCode = match.code;
+    }
+
+    if (activeCountryCode) {
+      // Incluimos las null por compatibilidad con ciudades viejas sin país
+      listToSearch = allCities.filter(c => c.countryCode === activeCountryCode || c.countryCode === null);
+    }
+
+    return new Fuse(listToSearch, { keys: ['name'], threshold: 0.4 });
+  }, [customCities, countryCode, countryName]);
+
+  useEffect(() => {
+    if (city) {
+      setCitySuggestions(fuseCity.search(city).map(r => r.item.name).slice(0, 5));
+    } else {
+      setCitySuggestions([]);
+    }
+  }, [city, fuseCity]);
+
+  useEffect(() => {
+    if (countryName) {
+      setCountrySuggestions(fuseCountry.search(countryName).map(r => r.item).slice(0, 5));
+    } else {
+      setCountrySuggestions([]);
+      setCountryCode('');
+    }
+  }, [countryName, fuseCountry]);
+
   const search = async (pageNumber = 0) => {
-    if (!keyword && !category && !city) {
+    if (!keyword && !category && !city && !countryName) {
       setError('Completá al menos un filtro para buscar.');
       return;
     }
+    
+    let resolvedCountryCode = countryCode;
+    if (countryName && !resolvedCountryCode) {
+      const match = countriesJson.find(c => c.name.toLowerCase() === countryName.toLowerCase());
+      if (match) resolvedCountryCode = match.code;
+    }
+
     setError('');
     setLoading(true);
+    setShowKeywordSuggestions(false);
+    setShowCitySuggestions(false);
+    setShowCountrySuggestions(false);
+    
     try {
       const params = { size: 10, page: pageNumber };
       if (keyword) params.keyword = keyword;
       if (category) params.classificationName = category;
       if (city) params.city = city;
+      if (resolvedCountryCode) params.countryCode = resolvedCountryCode;
 
       const data = await fetchFromApi('/events.json', params);
       const eventList = data._embedded?.events || [];
       setEvents(eventList);
       setPage(pageNumber);
       setTotalPages(data.page?.totalPages || 0);
+
+      if (eventList.length > 0) {
+        if (keyword && !recentSearches.includes(keyword)) {
+          const updated = [keyword, ...recentSearches].slice(0, 8);
+          setRecentSearches(updated);
+          localStorage.setItem('que-sale-recent', JSON.stringify(updated));
+        }
+
+        const cityExists = citiesJson.some(c => c.name.toLowerCase() === city.toLowerCase()) || 
+                           customCities.some(c => c.name.toLowerCase() === city.toLowerCase());
+
+        if (city && !cityExists) {
+          const normalizedCityName = city.charAt(0).toUpperCase() + city.slice(1);
+          const newCityObj = { name: normalizedCityName, countryCode: resolvedCountryCode || null };
+          const updatedCities = [...customCities, newCityObj];
+          setCustomCities(updatedCities);
+          localStorage.setItem('que-sale-custom-cities', JSON.stringify(updatedCities));
+        }
+      }
     } catch {
       setError('Error al buscar eventos. Intentá de nuevo.');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (initialCategory || initialKeyword) {
+      search(0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -49,7 +168,7 @@ export default function Search() {
 
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Fecha a confirmar';
-    const date = new Date(dateStr);
+    const date = new Date(`${dateStr}T00:00:00`);
     return date.toLocaleDateString('es-AR', {
       weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
     });
@@ -64,12 +183,32 @@ export default function Search() {
         <SearchIcon size={18} color="#999" />
         <input
           type="text"
-          placeholder="¿A dónde vas? Buscá eventos..."
+          placeholder="¿A dónde vas? Buscá eventos, artistas..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onFocus={() => setShowKeywordSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowKeywordSuggestions(false), 200)}
         />
         {keyword && (
-          <button type="button" className="search-clear" onClick={() => setKeyword('')}><XIcon size={16} /></button>
+          <button type="button" className="search-clear" onClick={() => setKeyword('')}>
+            <XIcon size={16} />
+          </button>
+        )}
+        
+        {showKeywordSuggestions && recentSearches.length > 0 && (
+          <ul className="search-dropdown">
+            <li className="search-dropdown-title">Búsquedas recientes</li>
+            {recentSearches.map((term, index) => (
+              <li 
+                key={index} 
+                className="search-dropdown-item"
+                onMouseDown={() => setKeyword(term)}
+              >
+                <ClockIcon size={14} color="#888" />
+                <span>{term}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
@@ -78,19 +217,71 @@ export default function Search() {
     <select value={category} onChange={(e) => setCategory(e.target.value)}>
       <option value="">Categoría ▾</option>
       <option value="Music">Música</option>
-      <option value="Sports">Deportes</option>
-      <option value="Arts & Theatre">Teatro y Arte</option>
+      <option value="Sports">Deporte</option>
+      <option value="Arts & Theatre">Teatro</option>
       <option value="Family">Familia</option>
+      <option value="Film">Cine</option>
     </select>
   </div>
 
-  <div className="filter-chip-outline">
+  <div className="filter-chip-outline" style={{ position: 'relative' }}>
+    <input
+      type="text"
+      placeholder="País ▾"
+      value={countryName}
+      onChange={(e) => {
+        setCountryName(e.target.value);
+        setCountryCode(''); // Reset code if user types manually
+      }}
+      onFocus={() => setShowCountrySuggestions(true)}
+      onBlur={() => setTimeout(() => setShowCountrySuggestions(false), 200)}
+      style={{ width: '80px' }}
+    />
+    
+    {showCountrySuggestions && countrySuggestions.length > 0 && (
+      <ul className="search-dropdown country-dropdown">
+        {countrySuggestions.map((country, index) => (
+          <li 
+            key={index} 
+            className="search-dropdown-item"
+            onMouseDown={() => {
+              setCountryName(country.name);
+              setCountryCode(country.code);
+            }}
+          >
+            <MapPinIcon size={14} color="#888" />
+            <span>{country.name}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <div className="filter-chip-outline" style={{ position: 'relative' }}>
     <input
       type="text"
       placeholder="Ciudad ▾"
       value={city}
       onChange={(e) => setCity(e.target.value)}
+      onFocus={() => setShowCitySuggestions(true)}
+      onBlur={() => setTimeout(() => setShowCitySuggestions(false), 200)}
+      style={{ width: '90px' }}
     />
+    
+    {showCitySuggestions && citySuggestions.length > 0 && (
+      <ul className="search-dropdown city-dropdown">
+        {citySuggestions.map((suggestion, index) => (
+          <li 
+            key={index} 
+            className="search-dropdown-item"
+            onMouseDown={() => setCity(suggestion)}
+          >
+            <MapPinIcon size={14} color="#888" />
+            <span>{suggestion}</span>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 </div>
 

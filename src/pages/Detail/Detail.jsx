@@ -29,6 +29,27 @@ export default function Detail() {
       try {
         const data = await fetchFromApi(`/events/${id}.json`);
         setEvent(data);
+
+        // Guardar en el historial
+        const image = data.images?.find(img => img.ratio === '16_9' && img.width > 300) || data.images?.[0];
+        const venue = data._embedded?.venues?.[0];
+        const price = data.priceRanges?.[0];
+        
+        const historyItem = {
+          id: data.id,
+          name: data.name,
+          image: image?.url || null,
+          dateStr: data.dates?.start?.localDate,
+          timeStr: data.dates?.start?.localTime,
+          venueName: venue?.city?.name || venue?.name || 'Ubicación a confirmar',
+          price: price ? price.min : null
+        };
+
+        const existingHistory = JSON.parse(localStorage.getItem('que-sale-history') || '[]');
+        // Filtrar si ya existe para evitar duplicados y ponerlo siempre arriba
+        const newHistory = [historyItem, ...existingHistory.filter(e => e.id !== data.id)];
+        localStorage.setItem('que-sale-history', JSON.stringify(newHistory));
+
       } catch (err) {
         console.error(err);
         setError('No pudimos cargar el evento. Intentá de nuevo.');
