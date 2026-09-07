@@ -2,7 +2,20 @@ import { useState } from 'react';
 import { XIcon, PlusIcon } from '../../icons';
 import './SaveEventModal.css';
 
+// Función que calcula la categoría según el horario
+const getCategoryFromTime = (timeStr) => {
+  if (!timeStr) return '';
+  const hour = parseInt(timeStr.slice(0, 2), 10);
+  if (hour >= 6 && hour < 12) return 'MAÑANA';
+  if (hour >= 12 && hour < 15) return 'MEDIODIA';
+  if (hour >= 15 && hour < 20) return 'TARDE';
+  return 'NOCTURNO';
+};
+
 export default function SaveEventModal({ event, onClose }) {
+  const timeStr = event?.dates?.start?.localTime || '';
+  const autoCategory = getCategoryFromTime(timeStr);
+  
   const [priority, setPriority] = useState(2);
   const [category, setCategory] = useState('');
   const [notes, setNotes] = useState('');
@@ -24,50 +37,47 @@ export default function SaveEventModal({ event, onClose }) {
   const city =
     venue?.city?.name || '';
 
+  const countryName =
+    venue?.country?.name || '';
+
   const handleSave = () => {
-    if (!category) {
-      return;
-    }
+  if (!category && !autoCategory) {
+    return;
+  }
 
-    const savedEvent = {
-      id: event.id,
-      name: event.name,
+  const finalCategory = category || autoCategory;
 
-      image: image?.url || '',
+  const savedEvent = {
+    id: event.id,
+    name: event.name,
+    image: image?.url || '',
+    date: event.dates?.start?.localDate || '',
+    time: event.dates?.start?.localTime?.slice(0, 5) || '',
+    venue: venueName,
+    city: city,
+    country: countryName,
+    price: price?.min ?? null,
+    priority: Number(priority),
+    category: finalCategory,
+    notes: notes,
+    savedAt: new Date().toISOString()
+  };
 
-      date: event.dates?.start?.localDate || '',
-      time: event.dates?.start?.localTime?.slice(0, 5) || '',
+  const existingEvents =
+    JSON.parse(localStorage.getItem('savedEvents')) || [];
 
-      venue: venueName,
-      city: city,
+  const alreadySaved = existingEvents.some(
+    (item) => item.id === event.id
+  );
 
-      price: price?.min ?? null,
-
-      priority: Number(priority),
-      category: category,
-      notes: notes,
-
-      savedAt: new Date().toISOString()
-    };
-
-    const existingEvents =
-      JSON.parse(localStorage.getItem('savedEvents')) || [];
-
-    const alreadySaved = existingEvents.some(
-      (item) => item.id === event.id
+  if (!alreadySaved) {
+    localStorage.setItem(
+      'savedEvents',
+      JSON.stringify([...existingEvents, savedEvent])
     );
+  }
 
-    if (!alreadySaved) {
-      localStorage.setItem(
-        'savedEvents',
-        JSON.stringify([
-          ...existingEvents,
-          savedEvent
-        ])
-      );
-    }
-
-    onClose();
+  onClose();
   };
 
   return (
@@ -172,48 +182,29 @@ export default function SaveEventModal({ event, onClose }) {
           </div>
 
           <div className="save-category-options">
-
-            <button
-              type="button"
-              className={`morning ${
-                category === 'MAÑANA' ? 'active' : ''
-              }`}
-              onClick={() => setCategory('MAÑANA')}
-            >
-              MAÑANA
-            </button>
-
-            <button
-              type="button"
-              className={`night ${
-                category === 'NOCTURNO' ? 'active' : ''
-              }`}
-              onClick={() => setCategory('NOCTURNO')}
-            >
-              NOCTURNO
-            </button>
-
-            <button
-              type="button"
-              className={`midday ${
-                category === 'MEDIODIA' ? 'active' : ''
-              }`}
-              onClick={() => setCategory('MEDIODIA')}
-            >
-              MEDIODIA
-            </button>
-
-            <button
-              type="button"
-              className={`afternoon ${
-                category === 'TARDE' ? 'active' : ''
-              }`}
-              onClick={() => setCategory('TARDE')}
-            >
-              TARDE
-            </button>
-
+            {['MAÑANA', 'NOCTURNO', 'MEDIODIA', 'TARDE'].map((cat) => {
+              const classMap = {
+                'MAÑANA': 'morning',
+                'NOCTURNO': 'night',
+                'MEDIODIA': 'midday',
+                'TARDE': 'afternoon'
+              };
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  className={`${classMap[cat]} ${category === cat ? 'active' : ''}`}
+                  disabled
+                >
+                  {cat}
+                </button>
+              );
+            })}
           </div>
+
+          <small style={{ color: '#aaa', fontSize: '0.72rem', marginTop: '4px', display: 'block' }}>
+          Categoría asignada automáticamente según el horario del evento.
+          </small>
 
         </div>
 
@@ -251,7 +242,7 @@ export default function SaveEventModal({ event, onClose }) {
         <button
           className="save-confirm-btn"
           onClick={handleSave}
-          disabled={!category}
+          disabled={!category && !autoCategory}
         >
           Agregar a guardados
         </button>

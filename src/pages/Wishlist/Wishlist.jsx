@@ -4,7 +4,9 @@ import {
   BookmarkIcon,
   CalendarIcon,
   MapPinIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  SearchIcon,
+  XIcon
 } from '../../icons';
 import './Wishlist.css';
 
@@ -12,6 +14,10 @@ export default function Wishlist() {
   const navigate = useNavigate();
 
   const [savedEvents, setSavedEvents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterPriority, setFilterPriority] = useState('');
 
   useEffect(() => {
     loadSavedEvents();
@@ -41,6 +47,16 @@ export default function Wishlist() {
 
     setSavedEvents(updatedEvents);
   };
+  
+  const uniqueCategories = [...new Set(savedEvents.map(e => e.category).filter(Boolean))].sort();
+  const uniquePriorities = [...new Set(savedEvents.map(e => e.priority).filter(Boolean))].sort((a,b)=>a-b);
+
+  const filteredEvents = savedEvents.filter(event => {
+    const matchSearch = event.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchCategory = filterCategory ? event.category === filterCategory : true;
+    const matchPriority = filterPriority ? event.priority === Number(filterPriority) : true;
+    return matchSearch && matchCategory && matchPriority;
+  });
 
   const formatDate = (dateStr) => {
     if (!dateStr) {
@@ -80,7 +96,6 @@ export default function Wishlist() {
     <div className="saved-container">
 
       {/* Header */}
-
       <header className="saved-header">
 
         <button
@@ -98,10 +113,40 @@ export default function Wishlist() {
         <div className="saved-header-space"></div>
 
       </header>
-
+      
+      {/* Search & Filters */}
+      {savedEvents.length > 0 && (
+        <div className="saved-filters-container">
+          <div className="saved-search-wrapper">
+            <SearchIcon size={18} color="#888" />
+            <input
+              type="text"
+              placeholder="Buscar en tus guardados..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="saved-search-clear" onClick={() => setSearchQuery('')}>
+                <XIcon size={16} />
+              </button>
+            )}
+          </div>
+          
+          <div className="saved-dropdown-filters">
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              <option value="">Horario</option>
+              {uniqueCategories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            
+            <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
+              <option value="">Prioridad</option>
+              {uniquePriorities.map(p => <option key={p} value={p}>P{p}</option>)}
+            </select>
+          </div>
+        </div>
+      )}
 
       {/* Contenido */}
-
       {savedEvents.length === 0 ? (
 
         <div className="saved-empty">
@@ -123,7 +168,7 @@ export default function Wishlist() {
 
         <main className="saved-list">
 
-          {savedEvents.map((event) => (
+          {filteredEvents.map((event) => (
 
             <article
               key={event.id}

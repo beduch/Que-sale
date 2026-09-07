@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchFromApi } from '../../api/client';
-import { SearchIcon } from '../../icons';
+import { SearchIcon, ClockIcon } from '../../icons';
 import './Home.css';
 
 const ChevronRight = () => (
@@ -13,29 +13,79 @@ const ChevronRight = () => (
 export default function Home() {
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchRecommended = async () => {
-      try {
-        const data = await fetchFromApi('/events.json', { city: 'Miami', size: 5, sort: 'random' });
-        setRecommended(data._embedded?.events || []);
-      } catch (error) {
-        console.error("Error al traer recomendados", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setRecentSearches(JSON.parse(localStorage.getItem('que-sale-recent') || '[]'));
+
+  const fetchRecommended = async () => {
+  try {
+    const data = await fetchFromApi('/events.json', { size: 20 });
+    const allEvents = data._embedded?.events || [];
+
+    // Mezclar al azar y tomar 6
+    const shuffled = allEvents.sort(() => Math.random() - 0.5).slice(0, 6);
+    setRecommended(shuffled);
+  } catch (error) {
+    console.error("Error al traer recomendados", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
     fetchRecommended();
   }, []);
 
   return (
     <div className="home-container">
 
-      <header className="home-search-bar" onClick={() => navigate('/buscar')}>
+      <form 
+        className="home-search-bar" 
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (searchQuery.trim()) {
+            navigate('/buscar', { state: { keyword: searchQuery } });
+          } else {
+            navigate('/buscar');
+          }
+        }}
+      >
         <SearchIcon size={18} color="#888" />
-        <span>Buscar eventos, artistas o ciudades...</span>
-      </header>
+        <input 
+          type="text" 
+          placeholder="Buscar eventos, artistas o ciudades..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+          style={{ border: 'none', background: 'transparent', flex: 1, outline: 'none', fontSize: '0.95rem', color: '#111' }}
+        />
+        
+        {/* Dropdown Búsquedas Recientes */}
+        {showSuggestions && recentSearches.length > 0 && (
+          <ul className="search-dropdown">
+            <li className="search-dropdown-title">Búsquedas recientes</li>
+            {recentSearches.map((term, index) => (
+              <li 
+                key={index} 
+                className="search-dropdown-item"
+                onMouseDown={() => {
+                  setSearchQuery(term);
+                  navigate('/buscar', { state: { keyword: term } });
+                }}
+              >
+                <ClockIcon size={14} color="#888" />
+                <span>{term}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </form>
 
       <section className="hero-banner">
         <div className="hero-content">
@@ -46,18 +96,19 @@ export default function Home() {
 
       <section className="home-section">
         <div className="section-header">
-          <h3>EVENTOS (Miami)</h3>
+          <h3>CATEGORÍAS DE EVENTOS</h3>
           <ChevronRight />
         </div>
 
         <div className="horizontal-scroll categories-scroll">
           {[
-            { name: "Música", img: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=150&q=80" },
-            { name: "Deportes", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=150&q=80" },
-            { name: "Teatro", img: "https://images.unsplash.com/photo-1507676184212-d0330a151f84?auto=format&fit=crop&w=150&q=80" },
-            { name: "Familia", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=150&q=80" }
+            { name: "Música", value: "Music", img: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=150&q=80" },
+            { name: "Deporte", value: "Sports", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=150&q=80" },
+            { name: "Teatro", value: "Arts & Theatre", img: "https://images.unsplash.com/photo-1518834107812-6a31c5188190?auto=format&fit=crop&w=150&q=80" },
+            { name: "Familia", value: "Family", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=150&q=80" },
+            { name: "Cine", value: "Film", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=150&q=80" }
           ].map((cat, idx) => (
-            <div key={idx} className="category-bubble" onClick={() => navigate('/buscar')}>
+            <div key={idx} className="category-bubble" onClick={() => navigate('/buscar', { state: { category: cat.value } })}>
               <img src={cat.img} alt={cat.name} />
               <span>{cat.name}</span>
             </div>

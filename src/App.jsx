@@ -22,7 +22,7 @@ function App() {
             <Route path="/buscar" element={<Search />} />
             <Route path="/detalle/:id" element={<Detail />} />
             <Route path="/deseos" element={<Wishlist />} />
-            <Route path="/historial" element={<History />} />
+            <Route path="/perfil" element={<History />} />
             <Route path="/contacto" element={<Contact />} />
           </Routes>
         </main>

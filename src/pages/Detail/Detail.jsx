@@ -12,6 +12,21 @@ import {
 import './Detail.css';
 import SaveEventModal from '../../components/SaveEventModal/SaveEventModal';
 
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+
 export default function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,6 +44,28 @@ export default function Detail() {
       try {
         const data = await fetchFromApi(`/events/${id}.json`);
         setEvent(data);
+
+        // Guardar en el historial
+        const image = data.images?.find(img => img.ratio === '16_9' && img.width > 300) || data.images?.[0];
+        const venue = data._embedded?.venues?.[0];
+        const price = data.priceRanges?.[0];
+        
+        const historyItem = {
+          id: data.id,
+          name: data.name,
+          image: image?.url || null,
+          dateStr: data.dates?.start?.localDate,
+          timeStr: data.dates?.start?.localTime,
+          venueName: venue?.name || 'Ubicación a confirmar',
+          city: venue?.city?.name || null,
+          price: price ? price.min : null
+        };
+
+        const existingHistory = JSON.parse(localStorage.getItem('que-sale-history') || '[]');
+        // Filtrar si ya existe para evitar duplicados y ponerlo siempre arriba
+        const newHistory = [historyItem, ...existingHistory.filter(e => e.id !== data.id)];
+        localStorage.setItem('que-sale-history', JSON.stringify(newHistory));
+
       } catch (err) {
         console.error(err);
         setError('No pudimos cargar el evento. Intentá de nuevo.');
@@ -293,31 +330,40 @@ export default function Detail() {
         {/* ───────── Mapa ───────── */}
 
         <section className="detail-section">
-
-          <h2>
-            Mapa
-          </h2>
+          <h2>Mapa</h2>
 
           <div className="detail-map">
-
-            {venue?.location?.latitude &&
-            venue?.location?.longitude ? (
-              <iframe
-                title={`Mapa de ${venueName}`}
-                src={`https://www.google.com/maps?q=${venue.location.latitude},${venue.location.longitude}&output=embed`}
-                loading="lazy"
-              />
+            {venue?.location?.latitude && venue?.location?.longitude ? (
+                <MapContainer
+                  key={`${venue.location.latitude}-${venue.location.longitude}`}
+                  center={[
+                    parseFloat(venue.location.latitude),
+                    parseFloat(venue.location.longitude)
+                  ]}
+                  zoom={15}
+                  scrollWheelZoom={false}
+                  style={{ height: '350px', width: '100%', borderRadius: '12px', zIndex: 0 }}
+                >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={[
+                  parseFloat(venue.location.latitude),
+                  parseFloat(venue.location.longitude)
+                ]}>
+                  <Popup>
+                    <strong>{venueName}</strong>
+                  </Popup>
+                </Marker>
+              </MapContainer>
             ) : (
               <div className="detail-map-placeholder">
                 <MapPinIcon size={28} />
-                <span>
-                  Ubicación no disponible
-                </span>
+                <span>Ubicación no disponible</span>
               </div>
             )}
-
           </div>
-
         </section>
 
       </main>

@@ -23,7 +23,7 @@ export default function Navbar() {
         <BellIcon size={24} />
       </Link>
 
-      <Link to="/perfil" className="nav-item">
+      <Link to="/perfil" className={location.pathname === '/perfil' ? 'nav-item active' : 'nav-item'}>
         <UserIcon size={24} />
       </Link>
     </nav>
