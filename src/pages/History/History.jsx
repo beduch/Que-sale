@@ -16,6 +16,14 @@ export default function History() {
     setHistory(savedHistory);
   }, []);
 
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const clearHistory = () => {
+      localStorage.removeItem('que-sale-history');
+      setHistory([]);
+      setShowConfirm(false);
+    };
+
   useEffect(() => {
   setCurrentPage(1);
   }, [searchQuery]);
@@ -52,8 +60,15 @@ export default function History() {
         </div>
       </div>
 
-      <div className="history-section">
-        <h3 className="history-title">Historial de Eventos Visitados</h3>
+      <div className="history-section">        
+        <div className="history-section-header">
+          <h3 className="history-title">Historial de Eventos Visitados</h3>
+          {history.length > 0 && (
+              <button className="history-clear-btn" onClick={() => setShowConfirm(true)}>
+                Limpiar
+              </button>
+          )}
+        </div>
         
         {history.length > 0 && (
           <div className="history-search-wrapper">
@@ -148,6 +163,23 @@ export default function History() {
           </ul>
         )}
       </div>
+
+      {showConfirm && (
+        <div className="confirm-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>¿Limpiar historial?</h3>
+            <p>Esta acción no se puede deshacer.</p>
+            <div className="confirm-actions">
+              <button className="confirm-cancel" onClick={() => setShowConfirm(false)}>
+                Cancelar
+              </button>
+              <button className="confirm-delete" onClick={clearHistory}>
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

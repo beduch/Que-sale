@@ -22,17 +22,22 @@ export default function Home() {
 
   useEffect(() => {
     setRecentSearches(JSON.parse(localStorage.getItem('que-sale-recent') || '[]'));
-    
-    const fetchRecommended = async () => {
-      try {
-        const data = await fetchFromApi('/events.json', { city: 'Miami', size: 5, sort: 'random' });
-        setRecommended(data._embedded?.events || []);
-      } catch (error) {
-        console.error("Error al traer recomendados", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+
+  const fetchRecommended = async () => {
+  try {
+    const data = await fetchFromApi('/events.json', { size: 20 });
+    const allEvents = data._embedded?.events || [];
+
+    // Mezclar al azar y tomar 6
+    const shuffled = allEvents.sort(() => Math.random() - 0.5).slice(0, 6);
+    setRecommended(shuffled);
+  } catch (error) {
+    console.error("Error al traer recomendados", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
     fetchRecommended();
   }, []);
 

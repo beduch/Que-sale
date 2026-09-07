@@ -22,7 +22,8 @@ let DefaultIcon = L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
   iconSize: [25, 41],
-  iconAnchor: [12, 41]
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
@@ -55,7 +56,8 @@ export default function Detail() {
           image: image?.url || null,
           dateStr: data.dates?.start?.localDate,
           timeStr: data.dates?.start?.localTime,
-          venueName: venue?.city?.name || venue?.name || 'Ubicación a confirmar',
+          venueName: venue?.name || 'Ubicación a confirmar',
+          city: venue?.city?.name || null,
           price: price ? price.min : null
         };
 
@@ -332,15 +334,16 @@ export default function Detail() {
 
           <div className="detail-map">
             {venue?.location?.latitude && venue?.location?.longitude ? (
-              <MapContainer
-                center={[
-                  parseFloat(venue.location.latitude),
-                  parseFloat(venue.location.longitude)
-                ]}
-                zoom={15}
-                scrollWheelZoom={false}
-                style={{ height: '400px', width: '100%', borderRadius: '12px', zIndex: 0 }}
-              >
+                <MapContainer
+                  key={`${venue.location.latitude}-${venue.location.longitude}`}
+                  center={[
+                    parseFloat(venue.location.latitude),
+                    parseFloat(venue.location.longitude)
+                  ]}
+                  zoom={15}
+                  scrollWheelZoom={false}
+                  style={{ height: '350px', width: '100%', borderRadius: '12px', zIndex: 0 }}
+                >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
