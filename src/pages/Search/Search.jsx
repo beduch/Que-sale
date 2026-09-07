@@ -13,18 +13,19 @@ export default function Search() {
   const initialCategory = location.state?.category || '';
   const initialKeyword = location.state?.keyword || '';
 
-  const [keyword, setKeyword] = useState(initialKeyword);
-  const [category, setCategory] = useState(initialCategory);
-  
-  const [city, setCity] = useState('');
-  const [countryName, setCountryName] = useState('');
-  const [countryCode, setCountryCode] = useState('');
-  
-  const [events, setEvents] = useState([]);
+  const [keyword, setKeyword] = useState(() => sessionStorage.getItem('search-keyword') || initialKeyword || '');
+  const [category, setCategory] = useState(() => sessionStorage.getItem('search-category') || initialCategory || '');
+  const [city, setCity] = useState(() => sessionStorage.getItem('search-city') || '');
+  const [countryName, setCountryName] = useState(() => sessionStorage.getItem('search-country-name') || '');
+  const [countryCode, setCountryCode] = useState(() => sessionStorage.getItem('search-country-code') || '');
+  const [events, setEvents] = useState(() => {
+    const saved = sessionStorage.getItem('search-results');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(() => Number(sessionStorage.getItem('search-page')) || 0);
+  const [totalPages, setTotalPages] = useState(() => Number(sessionStorage.getItem('search-total-pages')) || 0);
   const [eventToSave, setEventToSave] = useState(null);
   
   // Estados para Búsquedas Recientes
@@ -97,6 +98,17 @@ export default function Search() {
       setCountryCode('');
     }
   }, [countryName, fuseCountry]);
+
+  useEffect(() => {
+  sessionStorage.setItem('search-keyword', keyword);
+  sessionStorage.setItem('search-category', category);
+  sessionStorage.setItem('search-city', city);
+  sessionStorage.setItem('search-country-name', countryName);
+  sessionStorage.setItem('search-country-code', countryCode);
+  sessionStorage.setItem('search-results', JSON.stringify(events));
+  sessionStorage.setItem('search-page', String(page));
+  sessionStorage.setItem('search-total-pages', String(totalPages));
+}, [keyword, category, city, countryName, countryCode, events, page, totalPages]);
 
   const search = async (pageNumber = 0) => {
     if (!keyword && !category && !city && !countryName) {
