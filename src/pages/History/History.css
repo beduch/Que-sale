@@ -223,3 +223,38 @@
 .history-search-clear:hover {
   color: #111111;
 }
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 20px;
+}
+
+.history-page-btn {
+  padding: 8px 16px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.history-page-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.history-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.history-page-info {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}

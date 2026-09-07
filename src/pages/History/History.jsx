@@ -8,11 +8,17 @@ export default function History() {
   const [history, setHistory] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     const savedHistory = JSON.parse(localStorage.getItem('que-sale-history') || '[]');
     setHistory(savedHistory);
   }, []);
+
+  useEffect(() => {
+  setCurrentPage(1);
+  }, [searchQuery]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Fecha a confirmar';
@@ -23,8 +29,14 @@ export default function History() {
   };
 
   const results = searchQuery 
-    ? history.filter(event => event.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : history;
+  ? history.filter(event => event.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  : history;
+
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+  const paginatedResults = results.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="profile-container">
@@ -77,7 +89,7 @@ export default function History() {
           </div>
         ) : (
           <ul className="history-list">
-            {results.map((event) => (
+            {paginatedResults.map((event) => (
               <li 
                 key={event.id} 
                 className="history-card"
@@ -112,6 +124,27 @@ export default function History() {
                 </div>
               </li>
             ))}
+            {totalPages > 1 && (
+              <div className="history-pagination">
+                <button
+                  className="history-page-btn"
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  disabled={currentPage === 1}
+                >
+                  ← Anterior
+                </button>
+                <span className="history-page-info">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  className="history-page-btn"
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Siguiente →
+                </button>
+              </div>
+            )}
           </ul>
         )}
       </div>
