@@ -339,7 +339,7 @@ export default function Detail() {
                 ]}
                 zoom={15}
                 scrollWheelZoom={false}
-                style={{ height: '350px', width: '100%', borderRadius: '12px', zIndex: 0 }}
+                style={{ height: '400px', width: '100%', borderRadius: '12px', zIndex: 0 }}
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

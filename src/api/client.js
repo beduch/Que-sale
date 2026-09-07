@@ -1,4 +1,4 @@
-const API_KEY = 'hI485lnOGIe0Npys952FgA0QGdBlJe0M';
+const API_KEY = import.meta.env.VITE_TICKETMASTER_KEY;
 const BASE_URL = 'https://app.ticketmaster.com/discovery/v2';
 
 export const fetchFromApi = async (endpoint, params = {}) => {
