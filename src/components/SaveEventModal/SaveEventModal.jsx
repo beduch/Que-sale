@@ -19,6 +19,7 @@ export default function SaveEventModal({ event, onClose }) {
   const [priority, setPriority] = useState(2);
   const [category, setCategory] = useState('');
   const [notes, setNotes] = useState('');
+  const [error, setError] = useState('');
 
   if (!event) return null;
 
@@ -42,9 +43,23 @@ export default function SaveEventModal({ event, onClose }) {
 
   const handleSave = () => {
   if (!category && !autoCategory) {
+    setError('Debe seleccionar una categoría.');
     return;
   }
 
+  const numericPriority = Number(priority);
+  if (!priority || isNaN(numericPriority) || numericPriority < 1 || !Number.isInteger(numericPriority)) {
+    setError('La prioridad debe ser un número entero mayor a 0.');
+    return;
+  }
+
+  const hasDangerousChars = (str) => /[<>{}[\]\\]/.test(str);
+  if (hasDangerousChars(notes)) {
+    setError('Las notas contienen caracteres no permitidos (ej: <, >, {, }).');
+    return;
+  }
+
+  setError('');
   const finalCategory = category || autoCategory;
 
   const savedEvent = {
@@ -143,22 +158,17 @@ export default function SaveEventModal({ event, onClose }) {
           <div className="priority-control">
 
             <input
-              type="number"
-              min="1"
+              type="text"
               value={priority}
               onChange={(e) => {
-                const value = Number(e.target.value);
-
-                if (value >= 1) {
-                  setPriority(value);
-                }
+                setPriority(e.target.value);
               }}
             />
 
             <button
               type="button"
               onClick={() =>
-                setPriority((prev) => prev + 1)
+                setPriority((prev) => Number(prev) + 1)
               }
             >
               <PlusIcon size={17} />
@@ -193,7 +203,7 @@ export default function SaveEventModal({ event, onClose }) {
                 <button
                   key={cat}
                   type="button"
-                  className={`${classMap[cat]} ${category === cat ? 'active' : ''}`}
+                  className={`${classMap[cat]} ${(category || autoCategory) === cat ? 'active' : ''}`}
                   disabled
                 >
                   {cat}
@@ -238,7 +248,7 @@ export default function SaveEventModal({ event, onClose }) {
 
 
         {/* Guardar */}
-
+        {error && <p style={{ color: '#ff4d4f', fontSize: '0.85rem', textAlign: 'center', marginBottom: '8px', marginTop: '-8px' }}>{error}</p>}
         <button
           className="save-confirm-btn"
           onClick={handleSave}

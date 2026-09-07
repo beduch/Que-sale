@@ -17,6 +17,7 @@ export default function Home() {
   
   const [recentSearches, setRecentSearches] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [error, setError] = useState('');
   
   const navigate = useNavigate();
 
@@ -42,21 +43,29 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home-container">
+    <main className="home-container">
 
-      <form 
-        className="home-search-bar" 
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (searchQuery.trim()) {
-            navigate('/buscar', { state: { keyword: searchQuery } });
-          } else {
-            navigate('/buscar');
-          }
-        }}
-      >
-        <SearchIcon size={18} color="#888" />
-        <input 
+      <div style={{ width: '100%' }}>
+        <form 
+          className="home-search-bar" 
+          onSubmit={(e) => {
+            e.preventDefault();
+            const hasDangerousChars = (str) => /[<>{}[\]\\]/.test(str);
+            if (hasDangerousChars(searchQuery)) {
+              setError('Caracteres no permitidos (ej: <, >, {).');
+              return;
+            }
+            setError('');
+            
+            if (searchQuery.trim()) {
+              navigate('/buscar', { state: { keyword: searchQuery } });
+            } else {
+              navigate('/buscar');
+            }
+          }}
+        >
+          <SearchIcon size={18} color="#888" />
+          <input 
           type="text" 
           placeholder="Buscar eventos, artistas o ciudades..." 
           value={searchQuery}
@@ -85,7 +94,9 @@ export default function Home() {
             ))}
           </ul>
         )}
-      </form>
+        </form>
+        {error && <p style={{ color: '#ff4d4f', fontSize: '0.85rem', textAlign: 'center', marginTop: '8px' }}>{error}</p>}
+      </div>
 
       <section className="hero-banner">
         <div className="hero-content">
@@ -123,7 +134,18 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <p className="loading-text">Buscando los mejores eventos...</p>
+          <div className="horizontal-scroll recommended-scroll">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <article key={i} className="recommended-card skeleton-card">
+                <div className="skeleton-img skeleton-pulse"></div>
+                <div className="recommended-info">
+                  <div className="skeleton-text skeleton-category skeleton-pulse"></div>
+                  <div className="skeleton-text skeleton-title skeleton-pulse"></div>
+                  <div className="skeleton-text skeleton-price skeleton-pulse"></div>
+                </div>
+              </article>
+            ))}
+          </div>
         ) : (
           <div className="horizontal-scroll recommended-scroll">
             {recommended.map(event => {
@@ -145,6 +167,6 @@ export default function Home() {
         )}
       </section>
 
-    </div>
+    </main>
   );
 }

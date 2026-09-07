@@ -112,7 +112,14 @@ export default function Search() {
 
   const search = async (pageNumber = 0) => {
     if (!keyword && !category && !city && !countryName) {
-      setError('Completá al menos un filtro para buscar.');
+      setError('Por favor, completá al menos un filtro para buscar.');
+      return;
+    }
+    
+    // Validación contra inyección de código (caracteres no permitidos)
+    const hasDangerousChars = (str) => /[<>{}[\]\\]/.test(str);
+    if (hasDangerousChars(keyword) || hasDangerousChars(city) || hasDangerousChars(countryName)) {
+      setError('Caracteres no permitidos detectados (ej: <, >, {, }). Por seguridad no podés usar esos símbolos.');
       return;
     }
     
