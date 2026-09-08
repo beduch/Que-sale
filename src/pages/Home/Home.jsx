@@ -47,7 +47,16 @@ export default function Home() {
 
   useEffect(() => {
     setRecentSearches(JSON.parse(localStorage.getItem('que-sale-recent') || '[]'));
-    setSavedEvents(JSON.parse(localStorage.getItem('savedEvents')) || []);
+    const storedEvents = JSON.parse(localStorage.getItem('savedEvents')) || [];
+    const sortedEvents = [...storedEvents].sort((a, b) => {
+      const dateA = a.date ? new Date(`${a.date}T${a.time || '00:00'}`) : null;
+      const dateB = b.date ? new Date(`${b.date}T${b.time || '00:00'}`) : null;
+      if (!dateA && !dateB) return 0;
+      if (!dateA) return 1;
+      if (!dateB) return -1;
+      return dateA - dateB;
+    });
+    setSavedEvents(sortedEvents);
   }, []);
 
   useEffect(() => {
