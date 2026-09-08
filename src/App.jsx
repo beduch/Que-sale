@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 
 import Navbar from './components/Navbar/Navbar';
 
@@ -13,10 +14,16 @@ import './styles/global.css';
 import './styles/layout.css';
 
 function App() {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   return (
     <Router>
       <div className="app-container">
-        <main className="main-content">
+        <Navbar 
+          collapsed={isSidebarCollapsed} 
+          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+        />
+        <main className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/buscar" element={<Search />} />
@@ -26,7 +33,6 @@ function App() {
             <Route path="/contacto" element={<Contact />} />
           </Routes>
         </main>
-        <Navbar />
       </div>
     </Router>
   );
