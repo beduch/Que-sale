@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
-=======
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
->>>>>>> origin/franco2
+import { useState } from 'react';
 
 import Navbar from './components/Navbar/Navbar';
 import Login from './pages/Login/Login';
