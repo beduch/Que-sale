@@ -66,7 +66,6 @@ export default function Search() {
   }, []);
 
   const fuseCity = useMemo(() => {
-    // Unir JSON y custom, evitando duplicados por nombre
     const map = new Map();
     citiesJson.forEach(c => map.set(c.name.toLowerCase(), c));
     customCities.forEach(c => map.set(c.name.toLowerCase(), c));
@@ -82,7 +81,6 @@ export default function Search() {
     }
 
     if (activeCountryCode) {
-      // Incluimos las null por compatibilidad con ciudades viejas sin país
       listToSearch = allCities.filter(c => c.countryCode === activeCountryCode || c.countryCode === null);
     }
 
@@ -123,7 +121,6 @@ export default function Search() {
       return;
     }
     
-    // Validación contra inyección de código (caracteres no permitidos)
     const hasDangerousChars = (str) => /[<>{}[\]\\]/.test(str);
     if (hasDangerousChars(keyword) || hasDangerousChars(city) || hasDangerousChars(countryName)) {
       setError('Caracteres no permitidos detectados (ej: <, >, {, }). Por seguridad no podés usar esos símbolos.');
@@ -195,7 +192,6 @@ export default function Search() {
     if (initialCategory || initialKeyword) {
       search(0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearch = (e) => {
@@ -268,7 +264,7 @@ export default function Search() {
       value={countryName}
       onChange={(e) => {
         setCountryName(e.target.value);
-        setCountryCode(''); // Reset code if user types manually
+        setCountryCode('');
       }}
       onFocus={() => setShowCountrySuggestions(true)}
       onBlur={() => setTimeout(() => setShowCountrySuggestions(false), 200)}

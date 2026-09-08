@@ -128,7 +128,6 @@ export default function Home() {
           style={{ border: 'none', background: 'transparent', flex: 1, outline: 'none', fontSize: '0.95rem', color: '#111' }}
         />
 
-        {/* Dropdown Búsquedas Recientes */}
         {showSuggestions && recentSearches.length > 0 && (
           <ul className="search-dropdown">
             <li className="search-dropdown-title">Búsquedas recientes</li>
@@ -151,7 +150,6 @@ export default function Home() {
         {error && <p style={{ color: '#ff4d4f', fontSize: '0.85rem', textAlign: 'center', marginTop: '8px' }}>{error}</p>}
       </div>
 
-      {/* Carrusel principal */}
       <div className="hero-carousel">
         {[
           {
@@ -218,7 +216,6 @@ export default function Home() {
         </div>
       </section>
 
-            {/* ── NUEVO: próximos eventos guardados por el usuario (Wishlist) ── */}
       <section className="home-section">
         <div className="section-header">
           <h3>TUS PRÓXIMOS EVENTOS</h3>
