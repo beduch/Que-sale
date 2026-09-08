@@ -94,7 +94,7 @@ export default function Detail() {
   const formatTime = (timeStr) => {
     if (!timeStr) return 'Horario a confirmar';
 
-    return timeStr.slice(0, 5);
+    return timeStr.slice(0, 5) + ' hs';
   };
 
   const getImage = () => {
