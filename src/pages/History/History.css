@@ -387,3 +387,24 @@
   background: #e05252;
   color: #fff;
 }
+
+@media (max-width: 425px) {
+  .profile-header-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+    row-gap: 1rem;
+    align-items: center;
+  }
+
+  .profile-info {
+    min-width: 0;
+  }
+
+  .logout-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}

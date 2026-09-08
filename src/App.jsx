@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation
+} from 'react-router-dom';
 import { useState } from 'react';
 
 import Navbar from './components/Navbar/Navbar';
@@ -15,32 +21,104 @@ import './styles/layout.css';
 
 const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem('que-sale-user');
-  if (!user) return <Navigate to="/login" />;
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
   return children;
 };
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isLogin = location.pathname === '/login';
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <Router>
-      <div className="app-container">
-        <Navbar 
-          collapsed={isSidebarCollapsed} 
-          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+    <div className="app-container">
+
+      <main
+        className={`main-content ${
+          isSidebarCollapsed ? 'collapsed' : ''
+        }`}
+      >
+        <Routes>
+          <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/buscar"
+            element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/detalle/:id"
+            element={
+              <ProtectedRoute>
+                <Detail />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/deseos"
+            element={
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <History />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/contacto"
+            element={
+              <ProtectedRoute>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+
+      {!isLogin && (
+        <Navbar
+          collapsed={isSidebarCollapsed}
+          onToggle={() =>
+            setIsSidebarCollapsed(!isSidebarCollapsed)
+          }
         />
-        <main className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/buscar" element={<ProtectedRoute><Search /></ProtectedRoute>} />
-            <Route path="/detalle/:id" element={<ProtectedRoute><Detail /></ProtectedRoute>} />
-            <Route path="/deseos" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-            <Route path="/perfil" element={<ProtectedRoute><History /></ProtectedRoute>} />
-            <Route path="/contacto" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-          </Routes>
-        </main>
-      </div>
+      )}
+
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

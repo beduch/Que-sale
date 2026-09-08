@@ -155,19 +155,18 @@ export default function Home() {
       <div className="hero-carousel">
         {[
           {
-            title: "Planificá tu viaje deseado",
-            text: "Explorá eventos en cualquier ciudad del mundo antes de hacer las valijas.",
-            bg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80"
+            title: "Tu próximo viaje empieza acá",
+            text: "Descubrí eventos increíbles en cualquier ciudad del mundo y armá tu plan ideal.",
+            bg: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1920&q=85"
           },
           {
-            title: "¿Quiénes somos?",
-            text: "Dos desarrolladores que creamos Qué Sale para que siempre tengas un plan.",
-            bg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
-            isAbout: true
+            title: "Conocé Qué Sale",
+            text: "Dos desarrolladores, una idea: ayudarte a encontrar el próximo plan.",
+            bg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=85",
           },
           {
             title: "¿Hablamos?",
-            text: "Escribinos a Email@gmail.com o visitá nuestra oficina en La Plata.",
+            text: "¿Tenés una consulta, sugerencia o idea? Nos encantaría escucharte.",
             bg: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=600&q=80"
           }
         ].map((slide, idx) => (

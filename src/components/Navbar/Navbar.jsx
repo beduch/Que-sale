@@ -98,6 +98,7 @@ export default function Navbar({ collapsed, onToggle }) {
           }
         >
           <MailIcon size={24} />
+          <span className="nav-label desktop-only">Contacto</span>
         </Link>
 
         <Link

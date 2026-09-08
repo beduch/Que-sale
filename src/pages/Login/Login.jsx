@@ -13,6 +13,7 @@ const handleSubmit = (e) => {
   e.preventDefault();
   const nombreFinal = nombre.trim() || 'Usuario';
   localStorage.setItem('que-sale-user', nombreFinal);
+  localStorage.setItem('que-sale-email', email.trim() || '');
   navigate('/');
 };
 

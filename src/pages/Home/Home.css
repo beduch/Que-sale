@@ -4,6 +4,7 @@
   min-height: 100vh;
   padding-bottom: 80px;
   font-family: system-ui, -apple-system, sans-serif;
+  overflow: visible;
 }
 
 .home-search-bar {
@@ -17,7 +18,10 @@
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
   cursor: text;
-  position: relative;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .hero-carousel {
@@ -39,6 +43,7 @@
   background: linear-gradient(135deg, #14b8a6, #0d9488);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   opacity: 0;
   transition: opacity 0.6s ease;
   text-align: center;
