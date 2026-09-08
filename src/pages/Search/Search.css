@@ -1,15 +1,23 @@
-/*mobile-first */
+/* =========================================================
+   SEARCH - MOBILE FIRST
+   ========================================================= */
+
 * {
   box-sizing: border-box;
 }
 
 .search-container {
+  width: 100%;
   max-width: 430px;
   margin: 0 auto;
   padding: 24px 20px 120px;
   background: #fff;
   min-height: 100vh;
 }
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
 
 .search-title {
   font-size: 2rem;
@@ -23,7 +31,10 @@
   font-weight: 800;
 }
 
-/* ── Barra de búsqueda ── */
+/* =========================================================
+   BARRA DE BÚSQUEDA
+   ========================================================= */
+
 .search-form {
   display: flex;
   flex-direction: column;
@@ -32,15 +43,15 @@
 }
 
 .search-input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   background: #fff;
-  border: 1.5px solid 
-#e0e0e0;
+  border: 1.5px solid #e0e0e0;
   border-radius: 999px;
   padding: 12px 18px;
   gap: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .search-input-wrapper input {
@@ -50,6 +61,7 @@
   outline: none;
   flex: 1;
   color: #111;
+  min-width: 0;
 }
 
 .search-input-wrapper input::placeholder {
@@ -66,7 +78,10 @@
   line-height: 1;
 }
 
-/* ── Chips de filtros ── */
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
 .search-filters {
   display: flex;
   gap: 10px;
@@ -75,8 +90,7 @@
 }
 
 .filter-chip-teal {
-  background: 
-#00b2a9;
+  background: #00b2a9;
   border-radius: 999px;
   padding: 0;
   display: flex;
@@ -99,8 +113,7 @@
 }
 
 .filter-chip-teal select option {
-  background: 
-#00b2a9;
+  background: #00b2a9;
   color: #fff;
 }
 
@@ -127,6 +140,10 @@
   color: #888;
 }
 
+/* =========================================================
+   BOTÓN BUSCAR
+   ========================================================= */
+
 .search-btn {
   padding: 14px;
   background: #111;
@@ -149,12 +166,16 @@
   cursor: not-allowed;
 }
 
-/* ── Resultados header ── */
+/* =========================================================
+   RESULTADOS
+   ========================================================= */
+
 .search-results-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  gap: 10px;
 }
 
 .search-count {
@@ -173,13 +194,20 @@
   cursor: pointer;
 }
 
-/* ── Cards ── */
+/* =========================================================
+   CARDS
+   ========================================================= */
+
 .events-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+
+  display: grid;
+
+  /* Mobile */
+  grid-template-columns: 1fr;
+
   gap: 0;
 }
 
@@ -187,8 +215,7 @@
   display: flex;
   gap: 14px;
   padding: 14px 0;
-  border-bottom: 1px solid 
-#f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
   background: #fff;
   align-items: flex-start;
@@ -233,8 +260,7 @@
 .event-card-bookmark {
   width: 32px;
   height: 32px;
-  background: 
-#f5f5f5;
+  background: #f5f5f5;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -261,8 +287,7 @@
 }
 
 .event-card-meta-date .icon-cal {
-  color: 
-#e05252;
+  color: #e05252;
   font-size: 0.85rem;
 }
 
@@ -270,8 +295,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: 
-#00b2a9;
+  color: #00b2a9;
 }
 
 .event-card-meta-venue .icon-pin {
@@ -295,15 +319,17 @@
 .event-card-detail-btn {
   background: transparent;
   border: none;
-  color: 
-#00b2a9;
+  color: #00b2a9;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
 }
 
-/* ── Paginación ── */
+/* =========================================================
+   PAGINACIÓN
+   ========================================================= */
+
 .pagination {
   display: flex;
   align-items: center;
@@ -316,8 +342,7 @@
 
 .page-btn {
   padding: 8px 16px;
-  background: 
-#f4f4f4;
+  background: #f4f4f4;
   border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
@@ -330,97 +355,21 @@
 }
 
 .search-error {
-  color: 
-#e53e3e;
+  color: #e53e3e;
   font-size: 0.9rem;
   margin-bottom: 12px;
 }
 
-/* ── Tablet (481-1023px): 2 columnas ── */
-@media (min-width: 481px) and (max-width: 1023px) {
-  .search-container {
-    max-width: 680px;
-    padding: 28px 24px 120px;
-  }
-
-  .events-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .event-card {
-    flex-direction: column;
-    border-bottom: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .event-card-img {
-    width: 100%;
-    height: 130px;
-    border-radius: 0;
-  }
-
-  .event-card-info {
-    padding: 12px;
-    width: 100%;
-  }
-}
-
-/* ── Desktop (1024px+): 3 columnas ── */
-@media (min-width: 1024px) {
-  .search-container {
-    max-width: 960px;
-    padding: 32px 24px 120px;
-  }
-
-  .events-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .event-card {
-    flex-direction: column;
-    border-bottom: none;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .event-card:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.13);
-    transform: translateY(-2px);
-    transition: all 0.2s;
-  }
-
-  .event-card-img {
-    width: 100%;
-    height: 150px;
-    border-radius: 0;
-  }
-
-.event-card-info {
-  padding: 12px;
-  width: 100%;
-}
-}
-
-/* ── Dropdowns estilo Light Mode ── */
-.search-input-wrapper {
-  position: relative;
-}
+/* =========================================================
+   DROPDOWNS
+   ========================================================= */
 
 .search-dropdown {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: #ffffff; /* Fondo claro */
+  background: #ffffff;
   border-radius: 12px;
   padding: 8px 0;
   margin: 0;
@@ -432,8 +381,8 @@
   border: 1px solid #eeeeee;
 }
 
-/* Modificadores para los dropdowns de filtros cortos */
-.city-dropdown, .country-dropdown {
+.city-dropdown,
+.country-dropdown {
   min-width: 220px;
 }
 
@@ -460,24 +409,171 @@
   background-color: #f5f5f5;
 }
 
-/* Desktop fluid layout */
-@media (min-width: 768px) {
+/* =========================================================
+   MOBILE LANDSCAPE
+   481px - 767px
+   2 cards por fila
+   ========================================================= */
+
+@media (min-width: 481px) and (max-width: 767px) {
+
+  .search-container {
+    max-width: 680px;
+    padding: 28px 24px 120px;
+  }
+
+  .events-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .event-card {
+    flex-direction: column;
+    border-bottom: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .event-card-img {
+    width: 100%;
+    height: 130px;
+    border-radius: 0;
+  }
+
+  .event-card-info {
+    padding: 12px;
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   TABLET
+   768px - 1023px
+   2 cards por fila
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+
   .search-container {
     max-width: 100%;
-    background: transparent;
     padding: 0;
+    background: transparent;
   }
+
   .events-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
+
+  .event-card {
+    flex-direction: column;
+    border-bottom: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .event-card-img {
+    width: 100%;
+    height: 150px;
+    border-radius: 0;
+  }
+
+  .event-card-info {
+    padding: 12px;
+    width: 100%;
+  }
+
   .search-filters {
     display: flex;
     flex-direction: row;
     gap: 1rem;
   }
+
   .filter-item {
     flex: 1;
+  }
+}
+
+/* =========================================================
+   DESKTOP
+   1024px - 1439px → 3 cards
+   1440px - 1919px → 4 cards
+   1920px+ → 5 cards
+   ========================================================= */
+
+@media (min-width: 1024px) {
+
+  .search-container {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .events-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .event-card {
+    flex-direction: column;
+    border-bottom: none;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 0;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .event-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13);
+    transform: translateY(-2px);
+    transition: all 0.2s;
+  }
+
+  .event-card-img {
+    width: 100%;
+    height: 150px;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  .event-card-info {
+    padding: 12px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-filters {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .filter-item {
+    flex: 1;
+  }
+}
+
+/* 1440px → 4 cards */
+
+@media (min-width: 1440px) {
+
+  .events-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* 1920px → 5 cards */
+
+@media (min-width: 1920px) {
+
+  .events-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
