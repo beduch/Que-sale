@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { HomeIcon, SearchIcon, BookmarkIcon, BellIcon, UserIcon } from '../../icons';
+import { HomeIcon, SearchIcon, BookmarkIcon, MailIcon, UserIcon } from '../../icons';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -20,7 +20,7 @@ export default function Navbar() {
       </Link>
 
       <Link to="/contacto" className={location.pathname === '/contacto' ? 'nav-item active' : 'nav-item'}>
-        <BellIcon size={24} />
+        <MailIcon size={24} />
       </Link>
 
       <Link to="/perfil" className={location.pathname === '/perfil' ? 'nav-item active' : 'nav-item'}>

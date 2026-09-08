@@ -267,18 +267,14 @@
 
 .save-category-options button {
   border-radius: 999px;
-
   padding: 6px 10px;
-
   font-size: 0.61rem;
-
   font-weight: 700;
-
   background: #fff;
-
   cursor: pointer;
-
   transition: 0.15s;
+  opacity: 0.35;
+  filter: grayscale(0.4);
 }
 
 .save-category-options .morning {
@@ -314,10 +310,10 @@
 }
 
 .save-category-options button.active {
-  box-shadow:
-    0 0 0 2px rgba(0, 178, 169, 0.15);
-
+  box-shadow: 0 0 0 2px rgba(0, 178, 169, 0.15);
   transform: translateY(-1px);
+  opacity: 1;
+  filter: none;
 }
 
 

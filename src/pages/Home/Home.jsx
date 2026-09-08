@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchFromApi } from '../../api/client';
 import { SearchIcon, ClockIcon } from '../../icons';
 import './Home.css';
+import logoImg from '../../assets/Logo_QueSale.png';
 
 const ChevronRight = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -19,6 +20,15 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [error, setError] = useState('');
   
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % 3);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,12 +108,51 @@ export default function Home() {
         {error && <p style={{ color: '#ff4d4f', fontSize: '0.85rem', textAlign: 'center', marginTop: '8px' }}>{error}</p>}
       </div>
 
-      <section className="hero-banner">
-        <div className="hero-content">
-          <h2>Tu viaje, tus reglas.</h2>
-          <p>Descubre y planifica eventos internacionales antes de subir al avión.</p>
+      {/* Carrusel */}
+      <div className="hero-carousel">
+        {[
+          {
+            title: "Planificá tu viaje deseado",
+            text: "Explorá eventos en cualquier ciudad del mundo antes de hacer las valijas.",
+            bg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80"
+          },
+          {
+            title: "¿Quiénes somos?",
+            text: "Dos desarrolladores que creamos Qué Sale para que siempre tengas un plan.",
+            bg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80",
+            isAbout: true
+          },
+          {
+            title: "¿Hablamos?",
+            text: "Escribinos a Email@gmail.com o visitá nuestra oficina en La Plata.",
+            bg: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=600&q=80"
+          }
+        ].map((slide, idx) => (
+          <div
+            key={idx}
+            className={`hero-slide ${activeSlide === idx ? 'active' : ''} ${slide.isAbout ? 'hero-slide-about' : ''}`}
+            style={slide.bg ? { backgroundImage: `url(${slide.bg})` } : {}}
+          >
+            {slide.isAbout && (
+              <img src={logoImg} alt="Qué Sale" className="hero-logo" />
+            )}
+            <div className="hero-content">
+              <h2>{slide.title}</h2>
+              <p>{slide.text}</p>
+            </div>
+          </div>
+        ))}
+        <div className="hero-dots">
+          {[0, 1, 2].map(i => (
+            <button
+              key={i}
+              className={`hero-dot ${activeSlide === i ? 'active' : ''}`}
+              onClick={() => setActiveSlide(i)}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
         </div>
-      </section>
+      </div>
 
       <section className="home-section">
         <div className="section-header">
@@ -115,7 +164,7 @@ export default function Home() {
           {[
             { name: "Música", value: "Music", img: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=150&q=80" },
             { name: "Deporte", value: "Sports", img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=150&q=80" },
-            { name: "Teatro", value: "Arts & Theatre", img: "https://images.unsplash.com/photo-1518834107812-6a31c5188190?auto=format&fit=crop&w=150&q=80" },
+            { name: "Teatro", value: "Arts & Theatre", img: "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=150&q=80" },
             { name: "Familia", value: "Family", img: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=150&q=80" },
             { name: "Cine", value: "Film", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=150&q=80" }
           ].map((cat, idx) => (

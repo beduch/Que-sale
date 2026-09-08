@@ -13,8 +13,15 @@ export default function Search() {
   const initialCategory = location.state?.category || '';
   const initialKeyword = location.state?.keyword || '';
 
-  const [keyword, setKeyword] = useState(() => sessionStorage.getItem('search-keyword') || initialKeyword || '');
-  const [category, setCategory] = useState(() => sessionStorage.getItem('search-category') || initialCategory || '');
+  const [keyword, setKeyword] = useState(() => {
+    if (initialKeyword) return initialKeyword;
+    return sessionStorage.getItem('search-keyword') || '';
+  });
+
+  const [category, setCategory] = useState(() => {
+    if (initialCategory) return initialCategory;
+    return sessionStorage.getItem('search-category') || '';
+  });
   const [city, setCity] = useState(() => sessionStorage.getItem('search-city') || '');
   const [countryName, setCountryName] = useState(() => sessionStorage.getItem('search-country-name') || '');
   const [countryCode, setCountryCode] = useState(() => sessionStorage.getItem('search-country-code') || '');
@@ -172,6 +179,17 @@ export default function Search() {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if (location.state?.category !== undefined) {
+      setCategory(location.state.category);
+      setEvents([]);
+      search(0);
+    }
+    if (location.state?.keyword !== undefined) {
+      setKeyword(location.state.keyword);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (initialCategory || initialKeyword) {
@@ -343,7 +361,7 @@ export default function Search() {
                   <p className="event-card-meta">
                     <span className="event-card-meta-date">
                       <CalendarIcon size={13} />
-                      {formatDate(dateStr)}{timeStr && ` • ${timeStr}`}
+                      {formatDate(dateStr)}{timeStr && ` • ${timeStr} hs`}
                     </span>
                     {venue && (
                       <span className="event-card-meta-venue">
