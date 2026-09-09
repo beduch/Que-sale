@@ -1,0 +1,23 @@
+{
+  "name": "Qué Sale",
+  "short_name": "Qué Sale",
+  "description": "Descubrí eventos en cualquier ciudad del mundo.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e8f8f7",
+  "theme_color": "#00b2a9",
+  "icons": [
+    {
+      "src": "/Logo_QueSale.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Logo_QueSale.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

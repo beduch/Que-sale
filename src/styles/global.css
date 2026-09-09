@@ -49,3 +49,15 @@
     width: calc(100% - 80px);
   }
 }
+
+/* --- Sobreescrituras para la pantalla de Login --- */
+/* Elimina el espacio reservado del Navbar (tablet) y Sidebar (desktop) */
+.app-container.login-mode {
+  padding-bottom: 0 !important;
+}
+
+.main-content.login-mode {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+}

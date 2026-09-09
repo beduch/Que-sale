@@ -11,9 +11,19 @@ export default function Login() {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  const nombreFinal = nombre.trim() || 'Usuario';
-  localStorage.setItem('que-sale-user', nombreFinal);
-  localStorage.setItem('que-sale-email', email.trim() || '');
+  
+  if (!nombre.trim()) {
+    setError('Por favor, ingresa tu nombre antes de entrar.');
+    return;
+  }
+
+  if (!email.trim()) {
+    setError('Por favor, ingresa tu correo electrónico.');
+    return;
+  }
+
+  localStorage.setItem('que-sale-user', nombre.trim());
+  localStorage.setItem('que-sale-email', email.trim());
   navigate('/');
 };
 

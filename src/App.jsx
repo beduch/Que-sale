@@ -36,12 +36,12 @@ function AppContent() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isLogin ? 'login-mode' : ''}`}>
 
       <main
         className={`main-content ${
           isSidebarCollapsed ? 'collapsed' : ''
-        }`}
+        } ${isLogin ? 'login-mode' : ''}`}
       >
         <Routes>
           <Route path="/login" element={<Login />} />
