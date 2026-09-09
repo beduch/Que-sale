@@ -15,7 +15,6 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function Contact() {
-  // Catedral de La Plata
   const position = [-34.9215, -57.9536];
 
   return (

@@ -97,7 +97,6 @@ export default function Wishlist() {
 
       {/* Header */}
       <header className="saved-header">
-
         <button
           className="saved-back-btn"
           onClick={() => navigate(-1)}
@@ -105,13 +104,8 @@ export default function Wishlist() {
         >
           <ArrowLeftIcon size={18} />
         </button>
-
-        <h1>
-          Guardados
-        </h1>
-
+        <h1><span>Mis</span> Guardados</h1>
         <div className="saved-header-space"></div>
-
       </header>
       
       {/* Search & Filters */}
@@ -232,7 +226,7 @@ export default function Wishlist() {
                     {formatDate(event.date)}
 
                     {event.time &&
-                      ` • ${event.time}`}
+                      ` • ${event.time} hs`}
 
                   </p>
 

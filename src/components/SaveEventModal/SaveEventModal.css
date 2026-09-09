@@ -12,8 +12,6 @@
 }
 
 
-/* Modal */
-
 .save-modal {
   width: 100%;
   max-width: 430px;
@@ -43,8 +41,6 @@
 }
 
 
-/* Indicador */
-
 .save-modal-handle {
   width: 38px;
   height: 4px;
@@ -56,8 +52,6 @@
   margin: 0 auto 18px;
 }
 
-
-/* Header */
 
 .save-modal-header {
   display: flex;
@@ -97,8 +91,6 @@
   cursor: pointer;
 }
 
-
-/* Evento seleccionado */
 
 .save-selected-event {
   display: flex;
@@ -163,8 +155,6 @@
 }
 
 
-/* Campos */
-
 .save-field {
   margin-bottom: 15px;
 }
@@ -192,8 +182,6 @@
   color: #888;
 }
 
-
-/* Prioridad */
 
 .priority-control {
   display: flex;
@@ -255,8 +243,6 @@
 }
 
 
-/* Categorías */
-
 .save-category-options {
   display: flex;
 
@@ -267,18 +253,14 @@
 
 .save-category-options button {
   border-radius: 999px;
-
   padding: 6px 10px;
-
   font-size: 0.61rem;
-
   font-weight: 700;
-
   background: #fff;
-
   cursor: pointer;
-
   transition: 0.15s;
+  opacity: 0.35;
+  filter: grayscale(0.4);
 }
 
 .save-category-options .morning {
@@ -314,14 +296,12 @@
 }
 
 .save-category-options button.active {
-  box-shadow:
-    0 0 0 2px rgba(0, 178, 169, 0.15);
-
+  box-shadow: 0 0 0 2px rgba(0, 178, 169, 0.15);
   transform: translateY(-1px);
+  opacity: 1;
+  filter: none;
 }
 
-
-/* Notas */
 
 .save-field textarea {
   width: 100%;
@@ -354,8 +334,6 @@
     0 0 0 2px rgba(0, 178, 169, 0.08);
 }
 
-
-/* Guardar */
 
 .save-confirm-btn {
   width: 100%;
@@ -390,8 +368,6 @@
 }
 
 
-/* Cancelar */
-
 .save-cancel-btn {
   width: 100%;
 
@@ -410,8 +386,6 @@
   cursor: pointer;
 }
 
-
-/* Desktop */
 
 @media (min-width: 768px) {
 

@@ -45,7 +45,6 @@ export default function Detail() {
         const data = await fetchFromApi(`/events/${id}.json`);
         setEvent(data);
 
-        // Guardar en el historial
         const image = data.images?.find(img => img.ratio === '16_9' && img.width > 300) || data.images?.[0];
         const venue = data._embedded?.venues?.[0];
         const price = data.priceRanges?.[0];
@@ -62,7 +61,6 @@ export default function Detail() {
         };
 
         const existingHistory = JSON.parse(localStorage.getItem('que-sale-history') || '[]');
-        // Filtrar si ya existe para evitar duplicados y ponerlo siempre arriba
         const newHistory = [historyItem, ...existingHistory.filter(e => e.id !== data.id)];
         localStorage.setItem('que-sale-history', JSON.stringify(newHistory));
 
@@ -94,7 +92,7 @@ export default function Detail() {
   const formatTime = (timeStr) => {
     if (!timeStr) return 'Horario a confirmar';
 
-    return timeStr.slice(0, 5);
+    return timeStr.slice(0, 5) + ' hs';
   };
 
   const getImage = () => {

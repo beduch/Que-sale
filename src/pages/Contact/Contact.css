@@ -60,3 +60,10 @@
   height: 300px;
   border-radius: 12px;
 }
+
+@media (min-width: 768px) {
+  .contact-container {
+    background-color: transparent;
+    padding: 0;
+  }
+}

@@ -13,8 +13,15 @@ export default function Search() {
   const initialCategory = location.state?.category || '';
   const initialKeyword = location.state?.keyword || '';
 
-  const [keyword, setKeyword] = useState(() => sessionStorage.getItem('search-keyword') || initialKeyword || '');
-  const [category, setCategory] = useState(() => sessionStorage.getItem('search-category') || initialCategory || '');
+  const [keyword, setKeyword] = useState(() => {
+    if (initialKeyword) return initialKeyword;
+    return sessionStorage.getItem('search-keyword') || '';
+  });
+
+  const [category, setCategory] = useState(() => {
+    if (initialCategory) return initialCategory;
+    return sessionStorage.getItem('search-category') || '';
+  });
   const [city, setCity] = useState(() => sessionStorage.getItem('search-city') || '');
   const [countryName, setCountryName] = useState(() => sessionStorage.getItem('search-country-name') || '');
   const [countryCode, setCountryCode] = useState(() => sessionStorage.getItem('search-country-code') || '');
@@ -59,7 +66,6 @@ export default function Search() {
   }, []);
 
   const fuseCity = useMemo(() => {
-    // Unir JSON y custom, evitando duplicados por nombre
     const map = new Map();
     citiesJson.forEach(c => map.set(c.name.toLowerCase(), c));
     customCities.forEach(c => map.set(c.name.toLowerCase(), c));
@@ -75,7 +81,6 @@ export default function Search() {
     }
 
     if (activeCountryCode) {
-      // Incluimos las null por compatibilidad con ciudades viejas sin país
       listToSearch = allCities.filter(c => c.countryCode === activeCountryCode || c.countryCode === null);
     }
 
@@ -112,7 +117,13 @@ export default function Search() {
 
   const search = async (pageNumber = 0) => {
     if (!keyword && !category && !city && !countryName) {
-      setError('Completá al menos un filtro para buscar.');
+      setError('Por favor, completá al menos un filtro para buscar.');
+      return;
+    }
+    
+    const hasDangerousChars = (str) => /[<>{}[\]\\]/.test(str);
+    if (hasDangerousChars(keyword) || hasDangerousChars(city) || hasDangerousChars(countryName)) {
+      setError('Caracteres no permitidos detectados (ej: <, >, {, }). Por seguridad no podés usar esos símbolos.');
       return;
     }
     
@@ -165,12 +176,22 @@ export default function Search() {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if (location.state?.category !== undefined) {
+      setCategory(location.state.category);
+      setEvents([]);
+      search(0);
+    }
+    if (location.state?.keyword !== undefined) {
+      setKeyword(location.state.keyword);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (initialCategory || initialKeyword) {
       search(0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearch = (e) => {
@@ -243,7 +264,7 @@ export default function Search() {
       value={countryName}
       onChange={(e) => {
         setCountryName(e.target.value);
-        setCountryCode(''); // Reset code if user types manually
+        setCountryCode('');
       }}
       onFocus={() => setShowCountrySuggestions(true)}
       onBlur={() => setTimeout(() => setShowCountrySuggestions(false), 200)}
@@ -336,7 +357,7 @@ export default function Search() {
                   <p className="event-card-meta">
                     <span className="event-card-meta-date">
                       <CalendarIcon size={13} />
-                      {formatDate(dateStr)}{timeStr && ` • ${timeStr}`}
+                      {formatDate(dateStr)}{timeStr && ` • ${timeStr} hs`}
                     </span>
                     {venue && (
                       <span className="event-card-meta-venue">
