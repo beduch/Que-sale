@@ -2,6 +2,11 @@
 
 Aplicación web mobile-first para explorar eventos internacionales, orientada a viajeros que quieren planificar actividades en su próximo destino.
 
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)
+
 ## Demo
 
 https://beduch.github.io/Que-sale/
@@ -48,11 +53,15 @@ El diseño responsivo está implementado con CSS propio sin ninguna librería de
 
 ## Estructura del proyecto
 
+```
 src/
-├── api/ # Cliente HTTP centralizado
-├── assets/ # Recursos estáticos
-├── components/ # Componentes reutilizables (Navbar, SaveEventModal)
-├── data/ # JSON de ciudades y países para autocompletado local
-├── pages/ # Una carpeta por vista con su JSX y CSS
-├── icons/ # SVGs como componentes React
-└── styles/ # Estilos globales y layout
+├── api/            # Cliente HTTP centralizado
+├── assets/         # Recursos estáticos
+├── components/     # Navbar, SaveEventModal
+├── data/           # JSON de ciudades y países para autocompletado local
+├── pages/          # Una carpeta por vista con su JSX y CSS
+├── icons/          # SVGs como componentes React
+└── styles/         # Estilos globales y layout
+```
+
+---
