@@ -327,14 +327,7 @@ export default function Search() {
 
     {events.length > 0 && (
       <>
-        <div className="search-results-header">
-          <p className="search-count">{events.length} Eventos encontrados</p>
-          <select className="search-sort">
-            <option>Popularidad ▾</option>
-            <option>Fecha</option>
-            <option>Precio</option>
-          </select>
-        </div>
+        <p className="search-count">{events.length} Eventos encontrados</p>
 
         <ul className="events-list">
           {events.map((event) => {
